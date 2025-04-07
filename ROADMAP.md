@@ -20,12 +20,31 @@ Este roadmap detalha o processo de desenvolvimento do MVP da plataforma TPMSP, s
 - [x] Setup do Frontend
 
 ### Fase 2: Autenticação e Usuários (2 semanas)
-- [ ] Backend - Autenticação
-- [ ] Frontend - Autenticação
+- [x] Backend - Autenticação
+  - [x] Modelo de Usuário
+  - [x] Rotas de Autenticação
+  - [x] Middleware de Autenticação
+  - [x] Validações de dados
+  - [x] Testes unitários
+  - [x] Testes de integração
+- [x] Frontend - Autenticação
+  - [x] Contexto de Autenticação
+  - [x] Páginas de Login/Registro
+  - [x] Validações de formulários
+  - [x] Notificações toast
+  - [x] Testes de componentes
+  - [x] Testes E2E
+  - [x] Melhorias de acessibilidade
 
 ### Fase 3: CRUDs Básicos (3 semanas)
 - [ ] Planos de Teste
+  - [ ] Backend (Modelo, Rotas, Controller)
+  - [ ] Frontend (Componentes, Contexto)
+  - [ ] Testes Unitários e E2E
 - [ ] Suítes de Teste
+  - [ ] Backend (Modelo, Rotas, Controller)
+  - [ ] Frontend (Componentes, Contexto)
+  - [ ] Testes Unitários e E2E
 
 ### Fase 4: Casos de Teste e Execução (2 semanas)
 - [ ] Casos de Teste
@@ -345,4 +364,35 @@ Este roadmap detalha o processo de desenvolvimento do MVP da plataforma TPMSP, s
 - Deve haver cobertura de testes adequada
 - Interface deve ser responsiva
 - Performance deve ser aceitável
-- Segurança deve ser mantida 
+- Segurança deve ser mantida
+
+## 🚧 Débitos Técnicos
+
+### Testes Frontend
+1. **Login.test.tsx**
+   - Teste "navigates to register page when clicking register link" está falhando
+   - O `mockNavigate` não está sendo chamado com o caminho "/register"
+   - Prioridade: Baixa (não afeta funcionalidade)
+
+2. **AuthContext.test.tsx**
+   - Teste está falhando devido a problemas com o mock do `api`
+   - Prioridade: Média (afeta testes de contexto de autenticação)
+
+### Melhorias Futuras
+1. **React Router**
+   - Atualizar para usar as flags futuras do React Router v7
+   - `v7_startTransition` e `v7_relativeSplatPath`
+   - Prioridade: Baixa (apenas avisos de depreciação)
+
+2. **Testes de Componentes**
+   - Migrar de `ReactDOMTestUtils.act` para `React.act`
+   - Prioridade: Baixa (apenas avisos de depreciação)
+
+3. **Módulo punycode**
+   - Substituir o uso do módulo `punycode` por uma alternativa
+   - Prioridade: Baixa (apenas avisos de depreciação)
+
+### Plano de Resolução
+1. Corrigir testes do `Login.test.tsx` e `AuthContext.test.tsx` na próxima sprint
+2. Atualizar React Router e testes de componentes quando houver tempo disponível
+3. Resolver avisos de depreciação do `punycode` em uma futura atualização de dependências 
