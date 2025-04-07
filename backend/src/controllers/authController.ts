@@ -8,7 +8,12 @@ const JWT_EXPIRES_IN = '7d';
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
+
+    // Verificar se as senhas coincidem
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: 'Senhas não conferem' });
+    }
 
     // Verificar se o usuário já existe
     const existingUser = await User.findOne({ email });

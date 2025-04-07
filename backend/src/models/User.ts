@@ -1,6 +1,52 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: ID único do usuário gerado automaticamente
+ *         name:
+ *           type: string
+ *           description: Nome completo do usuário
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: Email único do usuário
+ *         password:
+ *           type: string
+ *           format: password
+ *           description: Senha do usuário (hash)
+ *         role:
+ *           type: string
+ *           enum: [admin, user]
+ *           default: user
+ *           description: Papel do usuário no sistema
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data de criação do usuário
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: Data da última atualização do usuário
+ *       example:
+ *         name: João Silva
+ *         email: joao@exemplo.com
+ *         role: user
+ *         createdAt: "2024-03-20T10:00:00Z"
+ *         updatedAt: "2024-03-20T10:00:00Z"
+ */
+
 export interface IUser extends Document {
   name: string;
   email: string;

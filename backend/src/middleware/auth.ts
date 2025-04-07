@@ -16,29 +16,46 @@ export const hashPassword = async (password: string): Promise<string> => {
 
 export const verifyToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    console.log('Headers:', req.headers);
     let token;
 
     if (req.headers.authorization?.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
+      console.log('Token extraído:', token);
     }
 
     if (!token) {
-      res.status(401).json({ message: 'Token não fornecido' });
-      return;
+      console.log('Token não fornecido');
+      return res.status(401).json({ message: 'Token não fornecido' });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-    const user = await User.findById(decoded.id);
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+      console.log('Token decodificado:', decoded);
+      
+      const user = await User.findById(decoded.id);
+      console.log('Usuário encontrado:', user ? 'Sim' : 'Não');
 
-    if (!user) {
-      res.status(401).json({ message: 'Token inválido' });
-      return;
+      if (!user) {
+        console.log('Usuário não encontrado');
+        return res.status(401).json({ message: 'Token inválido - Usuário não encontrado' });
+      }
+
+      req.user = user;
+      next();
+    } catch (jwtError) {
+      console.log('Erro ao verificar token:', jwtError);
+      return res.status(401).json({ 
+        message: 'Token inválido - Erro na verificação',
+        error: (jwtError as Error).message 
+      });
     }
-
-    req.user = user;
-    next();
   } catch (error) {
-    res.status(401).json({ message: 'Token inválido' });
+    console.error('Erro no middleware de autenticação:', error);
+    return res.status(401).json({ 
+      message: 'Token inválido',
+      error: (error as Error).message 
+    });
   }
 };
 
