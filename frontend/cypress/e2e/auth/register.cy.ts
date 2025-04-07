@@ -9,13 +9,20 @@ describe('Registro de Usuário', () => {
   });
 
   it('deve registrar um novo usuário com sucesso', () => {
-    cy.get('[data-testid="name"]').type('Test User', { force: true });
-    cy.get('[data-testid="email"]').type('test@test.com', { force: true });
+    const randomEmail = `test${Cypress._.random(1000, 9999)}@test.com`;
+    const randomName = `Test User ${Cypress._.random(1000, 9999)}`;
+    
+    cy.get('[data-testid="name"]').type(randomName, { force: true });
+    cy.get('[data-testid="email"]').type(randomEmail, { force: true });
     cy.get('[data-testid="password"]').type('password123', { force: true });
     cy.get('[data-testid="confirmPassword"]').type('password123', { force: true });
     cy.get('[data-testid="register-button"]').click();
-    // TODO: Descomentar quando a rota /dashboard estiver implementada
-    // cy.url().should('include', '/dashboard');
+    
+    // Verifica redirecionamento para o dashboard
+    cy.url().should('include', '/dashboard');
+    
+    // Verifica se o nome do usuário aparece na TopBar
+    cy.get('[data-testid="user-name"]').should('be.visible').and('contain', randomName);
   });
 
   it('deve mostrar erro quando as senhas não coincidem', () => {

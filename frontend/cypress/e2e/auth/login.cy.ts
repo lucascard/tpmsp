@@ -9,15 +9,26 @@ describe('Login de Usuário', () => {
   });
 
   it('deve fazer login com sucesso', () => {
-    cy.get('[data-testid="email"]').type('test@test.com', { force: true });
-    cy.get('[data-testid="password"]').type('password123', { force: true });
+    // Usuário de massa pré-cadastrado
+    const testUser = {
+      email: 'massatest@email.com',
+      password: 'teste123',
+      name: 'massa teste login'
+    };
+    
+    cy.get('[data-testid="email"]').type(testUser.email, { force: true });
+    cy.get('[data-testid="password"]').type(testUser.password, { force: true });
     cy.get('[data-testid="login-button"]').click();
-    // TODO: Descomentar quando a rota /dashboard estiver implementada
-    // cy.url().should('include', '/dashboard');
+    
+    // Verifica redirecionamento para o dashboard
+    cy.url().should('include', '/dashboard');
+    
+    // Verifica se o nome do usuário correto aparece na TopBar
+    cy.get('[data-testid="user-name"]', { force: true }).should('be.visible').and('contain', testUser.name);
   });
 
   it('deve mostrar erro quando as credenciais são inválidas', () => {
-    cy.get('[data-testid="email"]').type('wrong@test.com', { force: true });
+    cy.get('[data-testid="email"]').type('invalid@test.com', { force: true });
     cy.get('[data-testid="password"]').type('wrongpassword', { force: true });
     cy.get('[data-testid="login-button"]').click();
     cy.get('.Toastify__toast--error').should('be.visible').and('contain', 'Email ou senha inválidos');
