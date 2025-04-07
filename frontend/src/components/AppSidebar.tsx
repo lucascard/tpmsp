@@ -17,19 +17,36 @@ export const AppSidebar: React.FC = () => {
       </SidebarHeader>
 
       <nav className="flex flex-col gap-1 p-2">
-        <SidebarMenuButton onClick={() => navigate('/dashboard')}>
+        <SidebarMenuButton 
+          onClick={() => navigate('/dashboard')}
+          data-testid="dashboard-link"
+        >
           <LayoutDashboard className="h-4 w-4 mr-2" />
           Dashboard
         </SidebarMenuButton>
 
-        <SidebarMenuButton onClick={() => navigate('/test-plans')}>
+        <SidebarMenuButton 
+          onClick={() => navigate('/test-plans')}
+          data-testid="test-plans-link"
+        >
           <FolderKanban className="h-4 w-4 mr-2" />
           Planos de Teste
         </SidebarMenuButton>
 
-        <SidebarMenuButton onClick={() => navigate('/test-suites')}>
+        <SidebarMenuButton 
+          onClick={() => navigate('/test-suites')}
+          data-testid="test-suites-link"
+        >
           <FileText className="h-4 w-4 mr-2" />
           Suítes de Teste
+        </SidebarMenuButton>
+
+        <SidebarMenuButton 
+          onClick={() => navigate('/test-cases')}
+          data-testid="test-cases-link"
+        >
+          <FileText className="h-4 w-4 mr-2" />
+          Casos de Teste
         </SidebarMenuButton>
 
         <SidebarMenuButton onClick={() => navigate('/settings')}>
