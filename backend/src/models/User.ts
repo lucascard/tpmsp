@@ -43,6 +43,9 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
+// Criar índice único para email
+UserSchema.index({ email: 1 }, { unique: true });
+
 // Middleware para hash da senha antes de salvar
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
@@ -61,4 +64,5 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.model<IUser>('User', UserSchema); 
+const User = mongoose.model<IUser>('User', UserSchema);
+export { User }; 

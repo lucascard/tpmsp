@@ -91,10 +91,15 @@
 - React Testing Library para frontend
 - Foco em fluxos completos
 
-### Testes E2E (Planejados)
-- [ ] Cypress para testes end-to-end
-- [ ] Fluxos completos de usuário
-- [ ] Cenários reais de uso
+### Testes E2E (Implementado)
+- ✅ Cypress para testes end-to-end
+- ✅ Fluxos de autenticação
+  - Registro de usuário
+  - Login de usuário
+  - Validação de campos
+  - Tratamento de erros
+- ✅ Testes de integração
+- ✅ Testes de UI/UX
 
 ## 📊 Métricas de Cobertura
 
@@ -109,6 +114,16 @@
 - Funções: 100%
 - Branches: 100%
 - Statements: 100%
+
+### Autenticação (100% de cobertura)
+- Backend
+  - Modelo de Usuário
+  - Controller de Autenticação
+  - Middleware de Autenticação
+- Frontend
+  - Contexto de Autenticação
+  - Componentes de Login/Registro
+  - Testes E2E de fluxos de autenticação
 
 ## 🔄 Processo de Teste
 
