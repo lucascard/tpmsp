@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -26,12 +33,22 @@ api.interceptors.request.use((config) => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   // Verifica se há um token salvo ao iniciar
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
+      // Buscar informações do usuário
+      api.get('/auth/me')
+        .then(response => {
+          setUser(response.data);
+        })
+        .catch(() => {
+          // Se houver erro ao buscar as informações, faz logout
+          logout();
+        });
     }
   }, []);
 
@@ -41,8 +58,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email,
         password,
       });
-      const { token } = response.data;
+      const { token, user } = response.data;
       localStorage.setItem('token', token);
+      setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
       throw error;
@@ -51,13 +69,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      await api.post('/auth/register', {
+      const response = await api.post('/auth/register', {
         name,
         email,
         password,
       });
-      // Fazer login automaticamente após o registro
-      await login(email, password);
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      setUser(user);
+      setIsAuthenticated(true);
     } catch (error) {
       throw error;
     }
@@ -65,11 +85,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     localStorage.removeItem('token');
+    setUser(null);
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

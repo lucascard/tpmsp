@@ -5,10 +5,10 @@ import api from '../../services/api';
 
 // Mock do localStorage
 const mockLocalStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+  getItem: jest.fn() as jest.Mock<string | null, [string]>,
+  setItem: jest.fn() as jest.Mock<void, [string, string]>,
+  removeItem: jest.fn() as jest.Mock<void, [string]>,
+  clear: jest.fn() as jest.Mock<void, []>,
 };
 Object.defineProperty(window, 'localStorage', { value: mockLocalStorage });
 
@@ -44,7 +44,7 @@ const mockResponse = {
 };
 
 const TestComponent = () => {
-  const { login, register, logout, isAuthenticated } = useAuth();
+  const { login, register, logout, isAuthenticated, user } = useAuth();
   
   return (
     <div>
@@ -52,6 +52,7 @@ const TestComponent = () => {
       <button onClick={() => register('Test', 'test@test.com', 'password')}>Register</button>
       <button onClick={logout}>Logout</button>
       <div data-testid="isAuthenticated">{isAuthenticated ? 'true' : 'false'}</div>
+      <div data-testid="userName">{user?.name || 'null'}</div>
     </div>
   );
 };
@@ -59,7 +60,7 @@ const TestComponent = () => {
 describe('AuthContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    localStorage.clear();
+    mockLocalStorage.clear();
   });
 
   it('should handle login', async () => {
@@ -81,6 +82,7 @@ describe('AuthContext', () => {
         password: 'password'
       });
       expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('userName')).toHaveTextContent('Test User');
     });
   });
 
@@ -104,6 +106,7 @@ describe('AuthContext', () => {
         password: 'password'
       });
       expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('userName')).toHaveTextContent('Test User');
     });
   });
 
@@ -120,6 +123,45 @@ describe('AuthContext', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('false');
+      expect(screen.getByTestId('userName')).toHaveTextContent('null');
+    });
+  });
+
+  it('should fetch user data when token exists', async () => {
+    mockLocalStorage.getItem.mockReturnValue('fake-token');
+    (api.get as jest.Mock).mockResolvedValueOnce({ data: mockResponse.data.user });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith('/auth/me');
+      expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('userName')).toHaveTextContent('Test User');
+    });
+  });
+
+  it('should logout when token is invalid', async () => {
+    mockLocalStorage.getItem.mockReturnValue('fake-token');
+    (api.get as jest.Mock).mockRejectedValueOnce(new Error('Invalid token'));
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith('/auth/me');
+      expect(screen.getByTestId('isAuthenticated')).toHaveTextContent('false');
+      expect(screen.getByTestId('userName')).toHaveTextContent('null');
     });
   });
 }); 
