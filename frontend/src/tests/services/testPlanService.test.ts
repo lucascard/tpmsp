@@ -1,5 +1,5 @@
 import { testPlanService } from '../../services/testPlanService';
-import { api } from '../../services/api';
+import api from '../../services/api';
 import { TestPlan, TestPlanStatus } from '../../types/testPlan';
 
 jest.mock('../../services/api');

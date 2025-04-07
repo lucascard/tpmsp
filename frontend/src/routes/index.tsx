@@ -10,19 +10,26 @@ import TestPlansPage from '../pages/test-plans/TestPlansPage';
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
+  if (!isAuthenticated) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
-      <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
-      <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" />} />
-      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
-      {isAuthenticated && (
-        <Route path="/" element={<MainLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="test-plans" element={<TestPlansPage />} />
-          <Route path="test-suites" element={<div>Suítes de Teste</div>} />
-          <Route path="test-cases" element={<div>Casos de Teste</div>} />
-        </Route>
-      )}
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="test-plans" element={<TestPlansPage />} />
+        <Route path="test-suites" element={<div>Suítes de Teste</div>} />
+        <Route path="test-cases" element={<div>Casos de Teste</div>} />
+      </Route>
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 };

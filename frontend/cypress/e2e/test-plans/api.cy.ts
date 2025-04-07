@@ -1,138 +1,175 @@
-describe('Test Plans API', () => {
+/// <reference types="cypress" />
+
+describe('Test Plan API', () => {
+  let token: string;
+  let testPlanId: string;
+  let testUserEmail: string;
+  const API_BASE_URL = 'http://localhost:5000';
+
   beforeEach(() => {
-    // Fazer login antes de cada teste
-    cy.login('massatest@email.com', 'teste123');
-  });
+    // Gerar email aleatório para evitar conflitos
+    const randomString = Math.random().toString(36).substring(2, 8);
+    testUserEmail = `testplan_${randomString}@example.com`;
 
-  it('should list test plans', () => {
-    // Interceptar a chamada de API
-    cy.intercept('GET', '/api/test-plans*').as('getTestPlans');
-
-    // Visitar a página de planos de teste
-    cy.visit('/test-plans');
-
-    // Esperar a chamada de API
-    cy.wait('@getTestPlans').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(200);
-      expect(interception.response?.body).to.be.an('array');
+    // Registrar um usuário para os testes
+    cy.request({
+      method: 'POST',
+      url: `${API_BASE_URL}/auth/register`,
+      body: {
+        name: 'Test User',
+        email: testUserEmail,
+        password: 'password123',
+        confirmPassword: 'password123'
+      }
+    }).then((response) => {
+      token = response.body.token;
     });
   });
 
-  it('should create a new test plan', () => {
-    // Interceptar a chamada de API
-    cy.intercept('POST', '/api/test-plans').as('createTestPlan');
+  it('deve criar um novo plano de teste', () => {
+    const testPlan = {
+      title: 'Plano de Teste E2E',
+      description: 'Testes end-to-end do sistema',
+      status: 'draft',
+      suites: [
+        {
+          title: 'Suite de Login',
+          description: 'Testes de funcionalidades de login',
+          cases: [
+            {
+              title: 'Login bem-sucedido',
+              description: 'Teste de login com credenciais válidas',
+              steps: [
+                'Acessar a página de login',
+                'Preencher email válido',
+                'Preencher senha válida',
+                'Clicar em Login'
+              ],
+              expectedResult: 'Usuário é redirecionado para o dashboard',
+              status: 'pending'
+            }
+          ]
+        }
+      ]
+    };
 
-    // Visitar a página de planos de teste
-    cy.visit('/test-plans');
+    cy.request({
+      method: 'POST',
+      url: `${API_BASE_URL}/test-plans`,
+      headers: { Authorization: `Bearer ${token}` },
+      body: testPlan
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body).to.have.property('_id');
+      expect(response.body.title).to.eq(testPlan.title);
+      expect(response.body.description).to.eq(testPlan.description);
+      expect(response.body.status).to.eq(testPlan.status);
+      testPlanId = response.body._id;
+    });
+  });
 
-    // Clicar no botão de novo plano
-    cy.get('[data-testid="create-test-plan-button"]').click();
+  it('deve listar planos de teste com paginação', () => {
+    cy.request({
+      method: 'GET',
+      url: `${API_BASE_URL}/test-plans`,
+      headers: { Authorization: `Bearer ${token}` },
+      qs: { page: 1, limit: 10 }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('data');
+      expect(response.body).to.have.property('pagination');
+      expect(response.body.data).to.be.an('array');
+      expect(response.body.pagination).to.have.all.keys(['total', 'pages', 'page', 'limit']);
+    });
+  });
 
-    // Preencher o formulário
-    cy.get('[data-testid="test-plan-title"]').type('Novo Plano de Teste');
-    cy.get('[data-testid="test-plan-description"]').type('Descrição do novo plano');
-    cy.get('[data-testid="test-plan-status"]').click();
-    cy.get('[data-value="draft"]').click();
-
-    // Salvar o plano
-    cy.get('[data-testid="save-test-plan"]').click();
-
-    // Esperar a chamada de API
-    cy.wait('@createTestPlan').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(201);
-      expect(interception.response?.body).to.include({
-        title: 'Novo Plano de Teste',
-        description: 'Descrição do novo plano',
-        status: 'draft'
+  it('deve filtrar planos de teste por status', () => {
+    cy.request({
+      method: 'GET',
+      url: `${API_BASE_URL}/test-plans`,
+      headers: { Authorization: `Bearer ${token}` },
+      qs: { status: 'draft' }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.data).to.be.an('array');
+      response.body.data.forEach((plan: any) => {
+        expect(plan.status).to.eq('draft');
       });
     });
-
-    // Verificar se o plano aparece na lista
-    cy.contains('Novo Plano de Teste').should('be.visible');
   });
 
-  it('should update a test plan', () => {
-    // Interceptar a chamada de API
-    cy.intercept('PUT', '/api/test-plans/*').as('updateTestPlan');
-
-    // Visitar a página de planos de teste
-    cy.visit('/test-plans');
-
-    // Clicar no botão de editar do primeiro plano
-    cy.get('[data-testid="edit-test-plan"]').first().click();
-
-    // Atualizar o título
-    cy.get('[data-testid="test-plan-title"]').clear().type('Plano Atualizado');
-
-    // Salvar as alterações
-    cy.get('[data-testid="save-test-plan"]').click();
-
-    // Esperar a chamada de API
-    cy.wait('@updateTestPlan').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(200);
-      expect(interception.response?.body).to.include({
-        title: 'Plano Atualizado'
-      });
-    });
-
-    // Verificar se o título foi atualizado na lista
-    cy.contains('Plano Atualizado').should('be.visible');
-  });
-
-  it('should delete a test plan', () => {
-    // Interceptar a chamada de API
-    cy.intercept('DELETE', '/api/test-plans/*').as('deleteTestPlan');
-
-    // Visitar a página de planos de teste
-    cy.visit('/test-plans');
-
-    // Pegar o título do primeiro plano
-    cy.get('[data-testid="test-plan-title"]')
-      .first()
-      .invoke('text')
-      .as('planTitle');
-
-    // Clicar no botão de excluir do primeiro plano
-    cy.get('[data-testid="delete-test-plan"]').first().click();
-
-    // Confirmar a exclusão
-    cy.get('[data-testid="confirm-delete"]').click();
-
-    // Esperar a chamada de API
-    cy.wait('@deleteTestPlan').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(200);
-    });
-
-    // Verificar se o plano foi removido da lista
-    cy.get('@planTitle').then((title) => {
-      cy.contains(title as string).should('not.exist');
+  it('deve obter um plano de teste específico', () => {
+    cy.request({
+      method: 'GET',
+      url: `${API_BASE_URL}/test-plans/${testPlanId}`,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body._id).to.eq(testPlanId);
+      expect(response.body.title).to.eq('Plano de Teste E2E');
     });
   });
 
-  it('should filter test plans', () => {
-    // Interceptar a chamada de API
-    cy.intercept('GET', '/api/test-plans*').as('getTestPlans');
+  it('deve atualizar um plano de teste', () => {
+    const update = {
+      title: 'Plano de Teste E2E - Atualizado',
+      description: 'Descrição atualizada do plano de teste'
+    };
 
-    // Visitar a página de planos de teste
-    cy.visit('/test-plans');
+    cy.request({
+      method: 'PUT',
+      url: `${API_BASE_URL}/test-plans/${testPlanId}`,
+      headers: { Authorization: `Bearer ${token}` },
+      body: update
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body.title).to.eq(update.title);
+      expect(response.body.description).to.eq(update.description);
+    });
+  });
 
-    // Filtrar por status
-    cy.get('[data-testid="status-filter"]').click();
-    cy.get('[data-value="active"]').click();
+  it('deve falhar ao criar plano sem título', () => {
+    cy.request({
+      method: 'POST',
+      url: `${API_BASE_URL}/test-plans`,
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        description: 'Plano sem título'
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400);
+      expect(response.body).to.have.property('errors');
+    });
+  });
 
-    // Esperar a chamada de API
-    cy.wait('@getTestPlans').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(200);
-      expect(interception.request.url).to.include('status=active');
+  it('deve falhar ao acessar sem autenticação', () => {
+    cy.request({
+      method: 'GET',
+      url: `${API_BASE_URL}/test-plans`,
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401);
+    });
+  });
+
+  it('deve remover um plano de teste', () => {
+    cy.request({
+      method: 'DELETE',
+      url: `${API_BASE_URL}/test-plans/${testPlanId}`,
+      headers: { Authorization: `Bearer ${token}` }
+    }).then((response) => {
+      expect(response.status).to.eq(204);
     });
 
-    // Buscar por texto
-    cy.get('[data-testid="search-test-plans"]').type('teste');
-
-    // Esperar a chamada de API
-    cy.wait('@getTestPlans').then((interception) => {
-      expect(interception.response?.statusCode).to.equal(200);
-      expect(interception.request.url).to.include('search=teste');
+    // Verificar se o plano foi realmente removido
+    cy.request({
+      method: 'GET',
+      url: `${API_BASE_URL}/test-plans/${testPlanId}`,
+      headers: { Authorization: `Bearer ${token}` },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(404);
     });
   });
 }); 

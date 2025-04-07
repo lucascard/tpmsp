@@ -1,4 +1,4 @@
-import { api } from './api';
+import api from './api';
 import { TestPlan, CreateTestPlanData, UpdateTestPlanData, TestPlanFilters } from '../types/testPlan';
 
 export const testPlanService = {
