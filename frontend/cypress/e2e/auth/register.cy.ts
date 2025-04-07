@@ -18,6 +18,15 @@ describe('Registro de Usuário', () => {
     cy.get('[data-testid="confirmPassword"]').type('password123', { force: true });
     cy.get('[data-testid="register-button"]').click();
     
+    // Espera o toast de sucesso aparecer
+    cy.get('.Toastify__toast--success')
+      .should('be.visible')
+      .and('contain', 'Registro realizado com sucesso!');
+    
+    // Espera o toast desaparecer com um timeout maior
+    cy.get('.Toastify__toast--success', { timeout: 10000 })
+      .should('not.exist');
+    
     // Verifica redirecionamento para o dashboard
     cy.url().should('include', '/dashboard');
     
