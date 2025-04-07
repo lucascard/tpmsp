@@ -1,27 +1,19 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import TopBar from './TopBar';
-import Sidebar from './Sidebar';
+import { AppSidebar } from './AppSidebar';
 
 const MainLayout: React.FC = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className="min-h-screen">
       <TopBar />
-      <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - 240px)` },
-          ml: { sm: '240px' },
-          mt: '64px',
-        }}
-      >
-        <Outlet />
-      </Box>
-    </Box>
+      <div className="flex">
+        <AppSidebar />
+        <main className="flex-1 p-6 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
 };
 
