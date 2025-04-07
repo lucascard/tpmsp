@@ -1,42 +1,63 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Container,
-  Alert,
-} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Container, TextField, Typography, Alert } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const RegisterForm: React.FC = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const { signUp } = useAuth();
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const [error, setError] = useState<string>('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess(false);
 
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       setError('As senhas não coincidem');
+      toast.error('As senhas não coincidem', {
+        position: 'top-right',
+        autoClose: 3000
+      });
       return;
     }
 
     try {
-      await signUp({ name, email, password });
-      setSuccess(true);
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+      await register(formData.name, formData.email, formData.password);
+      toast.success('Registro realizado com sucesso!', {
+        position: 'top-right',
+        autoClose: 3000
+      });
+      navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao criar conta');
+      if (err.response?.data?.message === 'Email already exists') {
+        setError('Este email já está em uso');
+        toast.error('Este email já está em uso', {
+          position: 'top-right',
+          autoClose: 3000
+        });
+      } else {
+        setError('Erro ao criar conta. Tente novamente.');
+        toast.error('Erro ao criar conta. Tente novamente.', {
+          position: 'top-right',
+          autoClose: 3000
+        });
+      }
     }
   };
 
@@ -53,17 +74,8 @@ const RegisterForm: React.FC = () => {
         <Typography component="h1" variant="h5">
           Criar Conta
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          {success && (
-            <Alert severity="success" sx={{ mb: 2 }}>
-              Conta criada com sucesso! Você já pode fazer login.
-            </Alert>
-          )}
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }} role="form">
+          {error && <Alert severity="error" data-testid="error-message">{error}</Alert>}
           <TextField
             margin="normal"
             required
@@ -73,8 +85,9 @@ const RegisterForm: React.FC = () => {
             name="name"
             autoComplete="name"
             autoFocus
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleChange}
+            data-testid="name"
           />
           <TextField
             margin="normal"
@@ -84,8 +97,9 @@ const RegisterForm: React.FC = () => {
             label="Email"
             name="email"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
+            data-testid="email"
           />
           <TextField
             margin="normal"
@@ -96,8 +110,9 @@ const RegisterForm: React.FC = () => {
             type="password"
             id="password"
             autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
+            data-testid="password"
           />
           <TextField
             margin="normal"
@@ -107,14 +122,18 @@ const RegisterForm: React.FC = () => {
             label="Confirmar Senha"
             type="password"
             id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            autoComplete="new-password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            data-testid="confirmPassword"
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            color="primary"
             sx={{ mt: 3, mb: 2 }}
+            data-testid="register-button"
           >
             Criar Conta
           </Button>
