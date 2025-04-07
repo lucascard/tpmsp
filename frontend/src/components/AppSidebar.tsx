@@ -1,52 +1,41 @@
 import React from 'react';
-import { LayoutDashboard, FileText, FolderKanban, CheckSquare } from "lucide-react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { LayoutDashboard, FolderKanban, FileText, Settings } from 'lucide-react';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuItem,
+  SidebarHeader,
+  SidebarTitle,
   SidebarMenuButton,
-  SidebarRail,
-} from "@/components/ui/sidebar";
+} from "../components/ui/sidebar";
 
 export const AppSidebar: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const menuItems = [
-    { text: 'Dashboard', icon: <LayoutDashboard className="h-5 w-5" />, path: '/dashboard', testId: 'dashboard-link' },
-    { text: 'Planos de Teste', icon: <FileText className="h-5 w-5" />, path: '/test-plans', testId: 'test-plans-link' },
-    { text: 'Suítes de Teste', icon: <FolderKanban className="h-5 w-5" />, path: '/test-suites', testId: 'test-suites-link' },
-    { text: 'Casos de Teste', icon: <CheckSquare className="h-5 w-5" />, path: '/test-cases', testId: 'test-cases-link' },
-  ];
 
   return (
-    <aside className="w-64 border-r bg-card">
-      <div className="flex h-16 items-center border-b px-6">
-        <span className="text-lg font-semibold">TPMSP</span>
-      </div>
-      <nav className="space-y-1 p-2">
-        {menuItems.map((item) => (
-          <button
-            key={item.text}
-            onClick={() => navigate(item.path)}
-            data-testid={item.testId}
-            className={`
-              flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
-              ${location.pathname === item.path 
-                ? 'bg-primary/10 text-primary hover:bg-primary/15' 
-                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              }
-            `}
-          >
-            {React.cloneElement(item.icon, {
-              className: `h-5 w-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'}`
-            })}
-            {item.text}
-          </button>
-        ))}
+    <aside className="w-64 h-screen bg-white border-r">
+      <SidebarHeader>
+        <SidebarTitle>TPMSP</SidebarTitle>
+      </SidebarHeader>
+
+      <nav className="flex flex-col gap-1 p-2">
+        <SidebarMenuButton onClick={() => navigate('/dashboard')}>
+          <LayoutDashboard className="h-4 w-4 mr-2" />
+          Dashboard
+        </SidebarMenuButton>
+
+        <SidebarMenuButton onClick={() => navigate('/test-plans')}>
+          <FolderKanban className="h-4 w-4 mr-2" />
+          Planos de Teste
+        </SidebarMenuButton>
+
+        <SidebarMenuButton onClick={() => navigate('/test-suites')}>
+          <FileText className="h-4 w-4 mr-2" />
+          Suítes de Teste
+        </SidebarMenuButton>
+
+        <SidebarMenuButton onClick={() => navigate('/settings')}>
+          <Settings className="h-4 w-4 mr-2" />
+          Configurações
+        </SidebarMenuButton>
       </nav>
     </aside>
   );

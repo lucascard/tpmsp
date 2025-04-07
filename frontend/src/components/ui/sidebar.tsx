@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 import { Menu } from "lucide-react"
 import { Button } from "./button"
 
@@ -21,19 +21,92 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function Sidebar({ children }: { children: React.ReactNode }) {
-  const { expanded } = React.useContext(SidebarContext)
+const Sidebar = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col gap-4 p-4", className)}
+    {...props}
+  />
+))
+Sidebar.displayName = "Sidebar"
 
-  return (
-    <aside
-      className={cn(
-        "h-screen border-r bg-background transition-all duration-300",
-        expanded ? "w-64" : "w-16"
-      )}
-    >
-      {children}
-    </aside>
-  )
+const SidebarHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center gap-2", className)}
+    {...props}
+  />
+))
+SidebarHeader.displayName = "SidebarHeader"
+
+const SidebarTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, children, ...props }, ref) => (
+  <h2
+    ref={ref}
+    className={cn("text-lg font-semibold", className)}
+    {...props}
+  >
+    {children}
+  </h2>
+))
+SidebarTitle.displayName = "SidebarTitle"
+
+const SidebarTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    variant="ghost"
+    size="icon"
+    className={cn("h-9 w-9", className)}
+    {...props}
+  >
+    <Menu className="h-4 w-4" />
+  </Button>
+))
+SidebarTrigger.displayName = "SidebarTrigger"
+
+const SidebarRail = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col gap-2", className)}
+    {...props}
+  />
+))
+SidebarRail.displayName = "SidebarRail"
+
+const SidebarMenuButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <Button
+    ref={ref}
+    variant="ghost"
+    className={cn("w-full justify-start", className)}
+    {...props}
+  />
+))
+SidebarMenuButton.displayName = "SidebarMenuButton"
+
+export {
+  Sidebar,
+  SidebarHeader,
+  SidebarTitle,
+  SidebarTrigger,
+  SidebarRail,
+  SidebarMenuButton,
 }
 
 export function SidebarContent({ children }: { children: React.ReactNode }) {
@@ -50,66 +123,4 @@ export function SidebarMenu({ children }: { children: React.ReactNode }) {
 
 export function SidebarMenuItem({ children }: { children: React.ReactNode }) {
   return <div className="px-2">{children}</div>
-}
-
-export function SidebarMenuButton({
-  children,
-  tooltip,
-  asChild,
-  ...props
-}: {
-  children: React.ReactNode
-  tooltip?: string
-  asChild?: boolean
-} & React.ComponentPropsWithoutRef<typeof Button>) {
-  const { expanded } = React.useContext(SidebarContext)
-
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        "w-full justify-start gap-2",
-        !expanded && "justify-center px-2"
-      )}
-      title={!expanded ? tooltip : undefined}
-      asChild={asChild}
-      {...props}
-    >
-      {children}
-    </Button>
-  )
-}
-
-export function SidebarRail() {
-  const { expanded, setExpanded } = React.useContext(SidebarContext)
-
-  return (
-    <div className="mt-2 px-2">
-      <Button
-        variant="ghost"
-        className="w-full justify-center"
-        size="icon"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <Menu className="h-5 w-5" />
-        <span className="sr-only">Toggle sidebar</span>
-      </Button>
-    </div>
-  )
-}
-
-export function SidebarTrigger() {
-  const { expanded, setExpanded } = React.useContext(SidebarContext)
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="md:hidden"
-      onClick={() => setExpanded(!expanded)}
-    >
-      <Menu className="h-5 w-5" />
-      <span className="sr-only">Toggle sidebar</span>
-    </Button>
-  )
 } 
