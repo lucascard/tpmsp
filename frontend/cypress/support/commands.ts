@@ -3,18 +3,18 @@ import '@testing-library/cypress/add-commands';
 
 Cypress.Commands.add('register', (name: string, email: string, password: string) => {
   cy.visit('/register');
-  cy.get('input[name="name"]').type(name);
-  cy.get('input[name="email"]').type(email);
-  cy.get('input[name="password"]').type(password);
-  cy.get('input[name="confirmPassword"]').type(password);
-  cy.get('button[type="submit"]').click();
+  cy.get('[data-testid="name"]').type(name);
+  cy.get('[data-testid="email"]').type(email);
+  cy.get('[data-testid="password"]').type(password);
+  cy.get('[data-testid="confirmPassword"]').type(password);
+  cy.get('[data-testid="register-button"]').click();
 });
 
 Cypress.Commands.add('login', (email: string, password: string) => {
   cy.visit('/login');
-  cy.get('input[name="email"]').type(email);
-  cy.get('input[name="password"]').type(password);
-  cy.get('button[type="submit"]').click();
+  cy.get('[data-testid="email"]').type(email);
+  cy.get('[data-testid="password"]').type(password);
+  cy.get('[data-testid="login-button"]').click();
 });
 
 declare global {
