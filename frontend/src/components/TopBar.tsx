@@ -19,7 +19,7 @@ const TopBar: React.FC = () => {
           TPMSP
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body1">
+          <Typography variant="body1" data-testid="user-name">
             {user?.name}
           </Typography>
           <Button 
