@@ -12,19 +12,30 @@ TPMSP é uma plataforma completa de gestão de testes de software que permite o 
 - [x] Configuração do Husky para pre-commit hooks
 - [x] Setup inicial do backend (Node.js + Express)
 - [x] Setup inicial do frontend (React + TypeScript)
+- [x] Sistema de autenticação
+  - [x] Backend (Modelo de Usuário, Rotas, Middleware)
+  - [x] Frontend (Páginas de Login/Registro, Contexto)
 
 ### 🚧 Em Andamento
-- [ ] Sistema de autenticação
-  - [ ] Backend (Modelo de Usuário, Rotas, Middleware)
-  - [ ] Frontend (Páginas de Login/Registro, Contexto)
+- [ ] CRUD de Planos de Teste
+  - [ ] Backend (Modelo, Rotas, Controller)
+  - [ ] Frontend (Componentes, Contexto)
 
 ### 📅 Próximos Passos
-1. Implementação da autenticação
-2. CRUD de Planos de Teste
-3. CRUD de Suítes de Teste
-4. CRUD de Casos de Teste
-5. Dashboard interativo
-6. Testes Regressivos
+1. Implementação do CRUD de Planos de Teste
+2. CRUD de Suítes de Teste
+3. CRUD de Casos de Teste
+4. Dashboard interativo
+5. Testes Regressivos
+
+### 🚧 Débitos Técnicos
+1. **Testes Frontend**
+   - Correção do teste de navegação em `Login.test.tsx`
+   - Correção do mock de API em `AuthContext.test.tsx`
+2. **Melhorias Futuras**
+   - Atualização das flags do React Router v7
+   - Migração de `ReactDOMTestUtils.act` para `React.act`
+   - Substituição do módulo `punycode`
 
 ## 🚀 Funcionalidades Principais
 
