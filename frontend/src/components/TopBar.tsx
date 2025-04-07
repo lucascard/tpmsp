@@ -25,7 +25,7 @@ export const TopBar: React.FC = () => {
             <User className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
-        <span className="text-sm font-medium">{user?.name}</span>
+        <span data-testid="user-name" className="text-sm font-medium">{user?.name}</span>
         <Button variant="ghost" size="icon" onClick={handleLogout}>
           <LogOut className="h-4 w-4" />
           <span className="sr-only">Sair</span>
