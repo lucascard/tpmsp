@@ -12,29 +12,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conexão com MongoDB
-mongoose
-  .connect(process.env.MONGO_URI || 'mongodb://localhost:27017/tpmsp')
-  .then(() => console.log('Conectado ao MongoDB'))
-  .catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
+// Routes
+app.use('/auth', authRoutes);
 
-// Rotas
-app.use('/api/auth', authRoutes);
+// Port
+const PORT = process.env.NODE_ENV === 'test' ? 5001 : 5000;
 
-// Rota de teste
-app.get('/', (req, res) => {
-  res.json({ message: 'API do TPMSP está funcionando!' });
-});
-
-// Tratamento de erros
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Algo deu errado!' });
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+// Start server
+if (process.env.NODE_ENV !== 'test') {
+  // MongoDB Connection
+  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tpmsp')
+    .then(() => {
+      console.log('Conectado ao MongoDB');
+      // Start server after MongoDB connection
+      app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error('Erro ao conectar ao MongoDB:', error);
+    });
+}
 
 export { app }; 

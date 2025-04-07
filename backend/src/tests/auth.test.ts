@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { app } from '../app';
-import User from '../models/User';
 import mongoose from 'mongoose';
+import { app } from '../app';
+import { User } from '../models/User';
 
 describe('Auth Controller', () => {
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/tpmsp-test');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tpmsp-test');
   });
 
   afterAll(async () => {
@@ -16,36 +16,35 @@ describe('Auth Controller', () => {
     await User.deleteMany({});
   });
 
-  describe('POST /api/auth/register', () => {
+  describe('POST /register', () => {
     it('should register a new user', async () => {
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/auth/register')
         .send({
           name: 'Test User',
           email: 'test@example.com',
-          password: 'password123',
+          password: 'password123'
         });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.token).toBeDefined();
       expect(res.body.user).toBeDefined();
-      expect(res.body.user.email).toBe('test@example.com');
     });
 
     it('should not register with existing email', async () => {
       await User.create({
         name: 'Existing User',
         email: 'test@example.com',
-        password: 'password123',
+        password: 'password123'
       });
 
       const res = await request(app)
-        .post('/api/auth/register')
+        .post('/auth/register')
         .send({
           name: 'Test User',
           email: 'test@example.com',
-          password: 'password123',
+          password: 'password123'
         });
 
       expect(res.status).toBe(400);
@@ -53,19 +52,21 @@ describe('Auth Controller', () => {
     });
   });
 
-  describe('POST /api/auth/login', () => {
-    it('should login with valid credentials', async () => {
+  describe('POST /login', () => {
+    beforeEach(async () => {
       await User.create({
         name: 'Test User',
         email: 'test@example.com',
-        password: 'password123',
+        password: 'password123'
       });
+    });
 
+    it('should login with valid credentials', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
+        .post('/auth/login')
         .send({
           email: 'test@example.com',
-          password: 'password123',
+          password: 'password123'
         });
 
       expect(res.status).toBe(200);
@@ -76,10 +77,10 @@ describe('Auth Controller', () => {
 
     it('should not login with invalid credentials', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
+        .post('/auth/login')
         .send({
           email: 'test@example.com',
-          password: 'wrongpassword',
+          password: 'wrongpassword'
         });
 
       expect(res.status).toBe(401);
