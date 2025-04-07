@@ -15,13 +15,14 @@ const AppRoutes: React.FC = () => {
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} />
       <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" />} />
       <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
-      <Route
-        path="/"
-        element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" />}
-      >
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="test-plans" element={<TestPlansPage />} />
-      </Route>
+      {isAuthenticated && (
+        <Route path="/" element={<MainLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="test-plans" element={<TestPlansPage />} />
+          <Route path="test-suites" element={<div>Suítes de Teste</div>} />
+          <Route path="test-cases" element={<div>Casos de Teste</div>} />
+        </Route>
+      )}
     </Routes>
   );
 };
