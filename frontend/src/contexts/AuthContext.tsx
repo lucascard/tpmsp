@@ -1,104 +1,84 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import api from '../services/api';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import axios from 'axios';
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-interface AuthState {
-  token: string;
-  user: User;
-}
-
-interface SignInCredentials {
-  email: string;
-  password: string;
-}
-
-interface SignUpData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface AuthContextData {
-  user: User;
-  signIn(credentials: SignInCredentials): Promise<void>;
-  signUp(data: SignUpData): Promise<void>;
-  signOut(): void;
+interface AuthContextType {
   isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@TPMSP:token');
-    const user = localStorage.getItem('@TPMSP:user');
+// Configuração do axios
+const api = axios.create({
+  baseURL: 'http://localhost:5000',
+});
 
-    if (token && user) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      return { token, user: JSON.parse(user) };
+// Interceptor para adicionar o token em todas as requisições
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Verifica se há um token salvo ao iniciar
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
     }
-
-    return {} as AuthState;
-  });
-
-  const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
-    const response = await api.post('/auth/login', {
-      email,
-      password,
-    });
-
-    const { token, user } = response.data;
-
-    localStorage.setItem('@TPMSP:token', token);
-    localStorage.setItem('@TPMSP:user', JSON.stringify(user));
-
-    api.defaults.headers.authorization = `Bearer ${token}`;
-
-    setData({ token, user });
   }, []);
 
-  const signUp = useCallback(async ({ name, email, password }: SignUpData) => {
-    await api.post('/auth/register', {
-      name,
-      email,
-      password,
-    });
-  }, []);
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await api.post('/auth/login', {
+        email,
+        password,
+      });
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+      setIsAuthenticated(true);
+    } catch (error) {
+      throw error;
+    }
+  };
 
-  const signOut = useCallback(() => {
-    localStorage.removeItem('@TPMSP:token');
-    localStorage.removeItem('@TPMSP:user');
+  const register = async (name: string, email: string, password: string) => {
+    try {
+      await api.post('/auth/register', {
+        name,
+        email,
+        password,
+      });
+      // Fazer login automaticamente após o registro
+      await login(email, password);
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    setData({} as AuthState);
-  }, []);
+  const logout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user: data.user,
-        signIn,
-        signUp,
-        signOut,
-        isAuthenticated: !!data.token,
-      }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = (): AuthContextData => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  if (context === undefined) {
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
-
   return context;
 }; 
