@@ -49,7 +49,7 @@ const TestComponent = () => {
   return (
     <div>
       <button onClick={() => login('test@test.com', 'password')}>Login</button>
-      <button onClick={() => register('Test', 'test@test.com', 'password')}>Register</button>
+      <button onClick={() => register('Test', 'test@test.com', 'password', 'password')}>Register</button>
       <button onClick={logout}>Logout</button>
       <div data-testid="isAuthenticated">{isAuthenticated ? 'true' : 'false'}</div>
       <div data-testid="userName">{user?.name || 'null'}</div>

@@ -38,14 +38,14 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.email, formData.password, formData.confirmPassword);
       toast.success('Registro realizado com sucesso!', {
         position: 'top-right',
         autoClose: 3000
       });
       navigate('/');
     } catch (err: any) {
-      if (err.response?.data?.message === 'Email already exists') {
+      if (err.response?.data?.message === 'Email já cadastrado') {
         setError('Este email já está em uso');
         toast.error('Este email já está em uso', {
           position: 'top-right',

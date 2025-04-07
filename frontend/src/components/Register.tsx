@@ -27,7 +27,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, confirmPassword);
       toast.success('Registro realizado com sucesso!', {
         position: 'top-right',
         autoClose: 3000
