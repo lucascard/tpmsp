@@ -1,5 +1,8 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Tooltip } from '@mui/material';
+import { LogOut, User } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,40 +16,35 @@ const TopBar: React.FC = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title="Test Plan Management System Professional">
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              TPMSP
-            </Typography>
-          </Tooltip>
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              ml: 2, 
-              display: { xs: 'none', sm: 'block' },
-              color: 'rgba(255, 255, 255, 0.7)'
-            }}
-          >
-            Test Plan Management System Professional
-          </Typography>
-        </Box>
-        <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body1" data-testid="user-name">
-            {user?.name}
-          </Typography>
-          <Button 
-            color="inherit" 
-            onClick={handleLogout}
-            data-testid="logout-button"
-          >
-            Sair
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <header className="h-16 border-b flex items-center px-4 sticky top-0 bg-background z-10">
+      <div className="flex items-center gap-4">
+        <SidebarTrigger />
+        <h1 className="text-xl font-semibold hidden md:block">Test Plan Management System Professional</h1>
+        <h1 className="text-xl font-semibold md:hidden">TPMS Pro</h1>
+      </div>
+      <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback data-testid="user-name">{user?.name?.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium hidden sm:inline-block" data-testid="user-name">{user?.name}</span>
+        </div>
+        <Button variant="ghost" size="icon" title="Perfil do usuário">
+          <User className="h-5 w-5" />
+          <span className="sr-only">Perfil do usuário</span>
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          title="Sair" 
+          onClick={handleLogout}
+          data-testid="logout-button"
+        >
+          <LogOut className="h-5 w-5" />
+          <span className="sr-only">Sair</span>
+        </Button>
+      </div>
+    </header>
   );
 };
 
