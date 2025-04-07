@@ -12,85 +12,104 @@ Este roadmap detalha o processo de desenvolvimento do MVP da plataforma TPMSP, s
 
 ## 🚀 Fases de Desenvolvimento
 
-### Fase 1: Configuração Inicial e Setup (Sprint 1)
-1. **Setup do Ambiente de Desenvolvimento**
-   - [ ] Criar estrutura inicial do projeto
-   - [ ] Configurar Git e repositório
-   - [ ] Configurar ESLint e Prettier
-   - [ ] Configurar Husky para pre-commit hooks
-   - [ ] Commitar como "Initial project setup"
+## 📅 Cronograma Estimado
 
-2. **Setup do Backend**
-   - [ ] Configurar Node.js + Express
-   - [ ] Configurar MongoDB + Mongoose
-   - [ ] Configurar Jest para testes
-   - [ ] Commitar como "Backend initial setup"
+### Fase 1: Configuração Inicial e Setup (1 semana)
+- [x] Setup do Ambiente de Desenvolvimento
+- [x] Setup do Backend
+- [x] Setup do Frontend
 
-3. **Setup do Frontend**
-   - [ ] Configurar React + TypeScript
-   - [ ] Configurar Material-UI
-   - [ ] Configurar Jest + React Testing Library
-   - [ ] Commitar como "Frontend initial setup"
+### Fase 2: Autenticação e Usuários (2 semanas)
+- [ ] Backend - Autenticação
+- [ ] Frontend - Autenticação
 
-### Fase 2: Autenticação e Usuários (Sprint 2)
-1. **Backend - Autenticação**
-   - [ ] Modelo de Usuário
-   - [ ] Rotas de autenticação
-   - [ ] Middleware de autenticação
-   - [ ] Testes unitários
-   - [ ] Commitar como "Authentication backend"
+### Fase 3: CRUDs Básicos (3 semanas)
+- [ ] Planos de Teste
+- [ ] Suítes de Teste
 
-2. **Frontend - Autenticação**
-   - [ ] Páginas de Login/Registro
-   - [ ] Contexto de autenticação
-   - [ ] Testes de componentes
-   - [ ] Commitar como "Authentication frontend"
+### Fase 4: Casos de Teste e Execução (2 semanas)
+- [ ] Casos de Teste
+- [ ] Execução de Testes
 
-### Fase 3: CRUDs Básicos (Sprint 3)
-1. **Planos de Teste**
-   - [ ] Modelo e rotas
-   - [ ] Interface do usuário
-   - [ ] Testes unitários e E2E
-   - [ ] Commitar como "Test plans CRUD"
+### Fase 5: Dashboard e Métricas (2 semanas)
+- [ ] Dashboard
+- [ ] Métricas e KPIs
 
-2. **Suítes de Teste**
-   - [ ] Modelo e rotas
-   - [ ] Interface do usuário
-   - [ ] Testes unitários e E2E
-   - [ ] Commitar como "Test suites CRUD"
+### Fase 6: Testes Regressivos (2 semanas)
+- [ ] Regressivos
 
-### Fase 4: Casos de Teste e Execução (Sprint 4)
-1. **Casos de Teste**
-   - [ ] Modelo e rotas
-   - [ ] Interface do usuário
-   - [ ] Testes unitários e E2E
-   - [ ] Commitar como "Test cases CRUD"
+## 🔄 Dependências entre Fases
+1. Fase 1 (Setup) → Todas as outras fases
+2. Fase 2 (Autenticação) → Fases 3, 4, 5, 6
+3. Fase 3 (CRUDs) → Fase 4 (Execução)
+4. Fase 4 (Execução) → Fase 5 (Dashboard)
+5. Fase 5 (Dashboard) → Fase 6 (Regressivos)
 
-2. **Execução de Testes**
-   - [ ] Lógica de execução
-   - [ ] Interface de execução
-   - [ ] Testes de integração
-   - [ ] Commitar como "Test execution feature"
+## ⚠️ Riscos e Mitigações
 
-### Fase 5: Dashboard e Métricas (Sprint 5)
-1. **Dashboard**
-   - [ ] Componentes de visualização
-   - [ ] Integração com dados
-   - [ ] Testes de componentes
-   - [ ] Commitar como "Dashboard implementation"
+### Riscos Técnicos
+1. **Integração com MongoDB**
+   - Risco: Problemas de performance
+   - Mitigação: Indexação adequada e monitoramento
 
-2. **Métricas e KPIs**
-   - [ ] Cálculos de métricas
-   - [ ] Visualizações
-   - [ ] Testes de integração
-   - [ ] Commitar como "Metrics implementation"
+2. **Autenticação e Segurança**
+   - Risco: Vulnerabilidades de segurança
+   - Mitigação: Revisão de código e testes de segurança
 
-### Fase 6: Testes Regressivos (Sprint 6)
-1. **Regressivos**
-   - [ ] Modelo e rotas
-   - [ ] Interface do usuário
-   - [ ] Testes unitários e E2E
-   - [ ] Commitar como "Regression tests feature"
+3. **Testes Automatizados**
+   - Risco: Cobertura insuficiente
+   - Mitigação: Metas claras de cobertura e revisão
+
+### Riscos de Projeto
+1. **Escopo**
+   - Risco: Aumento do escopo
+   - Mitigação: Revisões regulares e priorização
+
+2. **Tempo**
+   - Risco: Atrasos no cronograma
+   - Mitigação: Sprints curtos e revisões frequentes
+
+3. **Qualidade**
+   - Risco: Bugs em produção
+   - Mitigação: Testes rigorosos e code review
+
+## 🎯 Critérios de Aceitação Detalhados
+
+### Autenticação
+- [ ] Login com email/senha
+- [ ] Registro de novos usuários
+- [ ] Recuperação de senha
+- [ ] Validação de campos
+- [ ] Mensagens de erro claras
+- [ ] Testes de segurança
+
+### Planos de Teste
+- [ ] CRUD completo
+- [ ] Validação de dados
+- [ ] Relacionamento com Suítes
+- [ ] Histórico de alterações
+- [ ] Exportação em PDF
+
+### Suítes de Teste
+- [ ] CRUD completo
+- [ ] Organização hierárquica
+- [ ] Relacionamento com Casos
+- [ ] Execução em lote
+- [ ] Relatórios de execução
+
+### Casos de Teste
+- [ ] CRUD completo
+- [ ] Templates reutilizáveis
+- [ ] Anexos e screenshots
+- [ ] Histórico de execuções
+- [ ] Métricas de sucesso
+
+### Dashboard
+- [ ] Visualização em tempo real
+- [ ] Filtros e busca
+- [ ] Exportação de dados
+- [ ] Gráficos interativos
+- [ ] KPIs personalizáveis
 
 ## 🌳 Estratégia de Branching
 1. **Branch Principal**
@@ -121,19 +140,199 @@ Este roadmap detalha o processo de desenvolvimento do MVP da plataforma TPMSP, s
 - Todos os commits com testes associados
 - Documentação atualizada
 
-## 🔄 Processo de Desenvolvimento
-1. **Para cada feature:**
-   - IA sugere implementação
-   - Desenvolvedor revisa e aprova
-   - IA implementa com testes
-   - Desenvolvedor revisa novamente
-   - Commits são feitos com mensagens claras
+## 🔄 Processo de Desenvolvimento por Feature
 
-2. **Para cada commit:**
-   - Código deve passar nos testes
-   - Deve seguir padrões de código
-   - Deve incluir testes
-   - Deve ter mensagem clara
+### 1. Autenticação
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/authentication`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Criar modelo de Usuário
+   - [ ] Implementar rotas de autenticação
+   - [ ] Criar middleware de autenticação
+   - [ ] Implementar validações
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar páginas de Login/Registro
+   - [ ] Implementar contexto de autenticação
+   - [ ] Criar componentes reutilizáveis
+   - [ ] Implementar validações
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
+
+### 2. Planos de Teste
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/test-plans`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Criar modelo de Plano de Teste
+   - [ ] Implementar rotas CRUD
+   - [ ] Implementar validações
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar páginas de listagem/cadastro
+   - [ ] Implementar formulários
+   - [ ] Criar componentes reutilizáveis
+   - [ ] Implementar validações
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
+
+### 3. Suítes de Teste
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/test-suites`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Criar modelo de Suíte de Teste
+   - [ ] Implementar rotas CRUD
+   - [ ] Implementar validações
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar páginas de listagem/cadastro
+   - [ ] Implementar formulários
+   - [ ] Criar componentes reutilizáveis
+   - [ ] Implementar validações
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
+
+### 4. Casos de Teste
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/test-cases`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Criar modelo de Caso de Teste
+   - [ ] Implementar rotas CRUD
+   - [ ] Implementar validações
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar páginas de listagem/cadastro
+   - [ ] Implementar formulários
+   - [ ] Criar componentes reutilizáveis
+   - [ ] Implementar validações
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
+
+### 5. Dashboard
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/dashboard`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Implementar endpoints de métricas
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar componentes de visualização
+   - [ ] Implementar gráficos
+   - [ ] Criar filtros e busca
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
+
+### 6. Testes Regressivos
+1. **Setup Inicial**
+   - [ ] Criar branch `feature/regression-tests`
+   - [ ] Configurar ambiente de desenvolvimento
+   - [ ] Definir estrutura de arquivos
+
+2. **Backend**
+   - [ ] Implementar lógica de regressão
+   - [ ] Criar testes unitários
+   - [ ] Criar testes de API
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+3. **Frontend**
+   - [ ] Criar interface de execução
+   - [ ] Implementar relatórios
+   - [ ] Criar testes de componente
+   - [ ] Criar testes de integração
+   - [ ] Rodar testes
+   - [ ] Commitar mudanças
+   - [ ] Fazer push da branch
+
+4. **Finalização**
+   - [ ] Revisar código
+   - [ ] Resolver conflitos
+   - [ ] Merge para `main`
+   - [ ] Criar tag de versão
 
 ## 📝 Documentação
 - Cada fase terá sua documentação
